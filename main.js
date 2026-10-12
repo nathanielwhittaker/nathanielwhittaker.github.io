@@ -93,10 +93,25 @@
   const grid = $('#grid'), filterBar = $('.filters');
   let active = 'All';
 
+  // ---------- Media: images and looping gameplay clips ----------
+  // Clips behave like GIFs (muted, inline, no controls). With reduced motion they don't autoplay:
+  // the card shows the poster still and the gallery offers controls instead.
+  const clipsOf = p => (p.images || []).filter(m => m.video);
+  const mediaHTML = (m, loop) => m.video
+    ? `<video src="${m.src}" poster="${m.poster || ''}" muted playsinline preload="metadata" ${reduceMotion ? 'controls' : 'autoplay'} ${loop ? 'loop' : ''} aria-label="${esc(m.alt)}"></video>`
+    : `<img src="${m.src}" alt="${esc(m.alt)}" loading="lazy">`;
+  const thumbHTML = p => {
+    const m = p.images && p.images[0];
+    if (!m) return glyph(p.glyph);
+    if (!m.video) return mediaHTML(m);
+    if (reduceMotion) return `<img src="${m.poster}" alt="${esc(m.alt)}" loading="lazy">`;
+    return mediaHTML(m, clipsOf(p).length < 2) + (m.caption ? `<span class="cap">${esc(m.caption)}</span>` : '');
+  };
+
   const cardHTML = p => `
-    <button class="card ${p.featured ? 'featured' : ''} ${p.professional ? 'pro' : ''}" data-id="${p.id}" style="--a:${p.accent}" aria-label="${esc(p.title)}: open details">
+    <button class="card ${p.featured ? 'featured' : ''} ${p.hero ? 'hero-card' : ''} ${p.professional ? 'pro' : ''}" data-id="${p.id}" style="--a:${p.accent}" aria-label="${esc(p.title)}: open details">
       <div class="thumb ${p.images ? '' : 'glyph'}">
-        ${p.images ? `<img src="${p.images[0].src}" alt="${esc(p.images[0].alt)}" loading="lazy">` : glyph(p.glyph)}
+        ${thumbHTML(p)}
       </div>
       <div class="card-body">
         <h3>${esc(p.title)}</h3>
@@ -110,6 +125,21 @@
   grid.innerHTML = personal.map(cardHTML).join('') +
     `<div class="pro-head"><h3>Professional work</h3><p>${esc(PRO_INTRO)}</p></div>` +
     pro.map(cardHTML).join('');
+
+  // A card with several clips plays them back to back, then starts over.
+  grid.querySelectorAll('.card').forEach(card => {
+    const clips = clipsOf(PROJECTS.find(x => x.id === card.dataset.id));
+    const v = $('.thumb video', card), cap = $('.thumb .cap', card);
+    if (!v || clips.length < 2) return;
+    let k = 0;
+    v.addEventListener('ended', () => {
+      k = (k + 1) % clips.length;
+      Object.assign(v, { src: clips[k].src, poster: clips[k].poster });
+      v.setAttribute('aria-label', clips[k].alt);
+      if (cap) cap.textContent = clips[k].caption || '';
+      v.play().catch(() => {});
+    });
+  });
 
   const matches = (p, f) => f === 'All' || p.tags.includes(f);
   filterBar.innerHTML = FILTERS.map(f => {
@@ -151,9 +181,9 @@
 
   const setSlide = i => {
     gIndex = (i + gImages.length) % gImages.length;
-    const img = $('.gallery img', modal);
-    img.style.opacity = 0;
-    setTimeout(() => { img.src = gImages[gIndex].src; img.alt = gImages[gIndex].alt; img.style.opacity = 1; }, reduceMotion ? 0 : 150);
+    const box = $('.gallery .g-media', modal);
+    box.style.opacity = 0;
+    setTimeout(() => { box.innerHTML = mediaHTML(gImages[gIndex], true); box.style.opacity = 1; }, reduceMotion ? 0 : 150);
     modal.querySelectorAll('.dots button').forEach((d, k) => d.setAttribute('aria-current', k === gIndex));
   };
 
@@ -163,9 +193,9 @@
     mBody.style.setProperty('--a', p.accent);
     mBody.innerHTML = `
       ${gImages.length ? `<div class="gallery">
-        <img src="${gImages[0].src}" alt="${esc(gImages[0].alt)}">
-        ${gImages.length > 1 ? `<button class="g-btn prev" aria-label="Previous image">‹</button><button class="g-btn next" aria-label="Next image">›</button>
-        <div class="dots">${gImages.map((_, k) => `<button aria-label="Image ${k + 1}" aria-current="${k === 0}"></button>`).join('')}</div>` : ''}
+        <div class="g-media">${mediaHTML(gImages[0], true)}</div>
+        ${gImages.length > 1 ? `<button class="g-btn prev" aria-label="Previous slide">‹</button><button class="g-btn next" aria-label="Next slide">›</button>
+        <div class="dots">${gImages.map((m, k) => `<button class="${m.video ? 'is-video' : ''}" aria-label="${m.video ? 'Clip' : 'Image'} ${k + 1}" aria-current="${k === 0}"></button>`).join('')}</div>` : ''}
       </div>` : ''}
       <div class="m-content">
         <h2 id="m-title">${esc(p.title)}</h2>
@@ -180,6 +210,7 @@
           ? `<a class="btn btn-primary" href="${l.href}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`
           : `<span>${esc(l.label)}</span>`).join('')}</div>` : ''}
       </div>`;
+    grid.querySelectorAll('.thumb video').forEach(v => v.pause());
     modal.showModal();
     mBody.scrollTop = 0;
     history.replaceState(null, '', `#project/${id}`);
@@ -197,7 +228,11 @@
     if (e.key === 'ArrowLeft') setSlide(gIndex - 1);
     if (e.key === 'ArrowRight') setSlide(gIndex + 1);
   });
-  modal.addEventListener('close', () => history.replaceState(null, '', location.pathname));
+  modal.addEventListener('close', () => {
+    history.replaceState(null, '', location.pathname);
+    mBody.querySelectorAll('video').forEach(v => v.pause());
+    if (!reduceMotion) grid.querySelectorAll('.thumb video').forEach(v => v.play().catch(() => {}));
+  });
   grid.addEventListener('click', e => { const c = e.target.closest('.card'); if (c) openProject(c.dataset.id); });
 
   const deep = location.hash.match(/^#project\/(.+)$/);

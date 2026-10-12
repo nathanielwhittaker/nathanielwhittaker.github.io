@@ -337,3 +337,26 @@ dialog::backdrop { background: rgba(8, 6, 12, .7); backdrop-filter: blur(6px); }
 @media (max-width: 600px) {
   .adr, .evo { padding: 20px 18px; }
 }
+
+/* ---------- Gameplay clips + hero project card ---------- */
+.thumb video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+.card:hover .thumb video { transform: scale(1.03); }
+.thumb .cap {
+  position: absolute; left: 12px; bottom: 12px; font: 500 .72rem var(--mono); color: #fff;
+  background: rgba(0, 0, 0, .62); backdrop-filter: blur(4px); padding: 4px 10px; border-radius: 999px; pointer-events: none;
+}
+.gallery .g-media { width: 100%; height: 100%; transition: opacity .3s; }
+.gallery video { width: 100%; height: 100%; object-fit: contain; display: block; }
+.dots button.is-video { box-shadow: inset 0 0 0 1.5px var(--a, var(--accent)); }
+
+.card.hero-card { grid-column: 1 / -1; flex-direction: row; }
+.card.hero-card .thumb { flex: 0 0 62%; aspect-ratio: 800 / 426; }
+.card.hero-card .card-body { justify-content: center; padding: 28px 32px; gap: 14px; }
+.card.hero-card h3 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+.card.hero-card p { font-size: 1.02rem; }
+.grid .card:not(.pro):not(.hero-card) { grid-column: span 2; }
+@media (max-width: 900px) {
+  .card.hero-card { grid-column: 1 / -1; flex-direction: column; }
+  .card.hero-card .thumb { flex: none; }
+  .grid .card:not(.pro):not(.hero-card) { grid-column: span 1; }
+}

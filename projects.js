@@ -7,8 +7,13 @@ const PROJECTS = [
     tags: ['Game Dev', 'Personal'],
     stack: ['C# / .NET 8', 'Godot 4', 'Lua', 'xUnit', 'GdUnit4', 'Blender Python'],
     featured: true,
+    hero: true,
     accent: '#e0a84e',
+    // Gameplay clips come first: they play in sequence on the card and lead the gallery.
     images: [
+      { video: true, src: 'assets/video/arpg-caster-cave.mp4', poster: 'assets/video/arpg-caster-cave.jpg', alt: 'A caster burns a skeleton with a fire nova, then clears a torch-lit cave with chain lightning while gold drops', caption: 'Fire nova and chain lightning in a cave' },
+      { video: true, src: 'assets/video/arpg-warcry-field.mp4', poster: 'assets/video/arpg-warcry-field.jpg', alt: 'A melee character fights skeletons and a spider in an open field, then inspects a Thundering Mouthpiece warcry item', caption: 'Melee, monster packs and a warcry item' },
+      { video: true, src: 'assets/video/arpg-outskirts-loot.mp4', poster: 'assets/video/arpg-outskirts-loot.jpg', alt: 'Leaving town into the outskirts, fighting skeleton archers, and picking up gold and a Page of Frost Conversion', caption: 'Town outskirts: archers and loot drops' },
       { src: 'assets/img/arpg-01-town-overview.jpg', alt: 'Isometric overview of the town hub with houses, trees, and HUD orbs' },
       { src: 'assets/img/arpg-07-plaza-courtyard.jpg', alt: 'Town plaza courtyard' },
       { src: 'assets/img/arpg-03-timber-hut-gabled.jpg', alt: 'Timber hut with gabled roof' },
