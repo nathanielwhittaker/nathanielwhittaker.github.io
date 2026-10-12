@@ -34,7 +34,7 @@ const PROJECTS = [
       'Own asset and zone tooling, a headless screenshot verification harness, and live language switching',
       'Documentation-driven: 24 system specs and 230+ Architecture Decision Records',
     ],
-    metrics: [['850+', 'reviewed PRs'], ['2,100+', 'commits'], ['8,000+', 'tests'], ['230+', 'ADRs']],
+    metrics: [['850+', 'reviewed PRs'], ['2,100+', 'commits'], ['9,000+', 'tests'], ['230+', 'ADRs']],
     links: [{ label: 'Design rationale', href: 'design.html', internal: true }, { label: 'Devlog on GitHub', href: 'https://github.com/nathanielwhittaker/arpg-devlog' }, { label: 'Source is private · walkthrough on request' }],
   },
   {
