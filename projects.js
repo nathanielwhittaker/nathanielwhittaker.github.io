@@ -11,7 +11,7 @@ const PROJECTS = [
     accent: '#e0a84e',
     // Gameplay clips come first: they play in sequence on the card and lead the gallery.
     images: [
-      { video: true, src: 'assets/video/arpg-caster-cave.mp4', poster: 'assets/video/arpg-caster-cave.jpg', alt: 'A caster burns a skeleton with a fire nova, then clears a torch-lit cave with chain lightning while gold drops', caption: 'Fire nova and chain lightning in a cave' },
+      { video: true, src: 'assets/video/arpg-caster-cave.mp4', poster: 'assets/video/arpg-caster-cave.jpg', alt: 'A caster burns a skeleton with a lightning skill converted to fire, then clears a torch-lit cave with chain lightning while gold drops', caption: 'Lightning converted to fire, then chain lightning in a cave' },
       { video: true, src: 'assets/video/arpg-warcry-field.mp4', poster: 'assets/video/arpg-warcry-field.jpg', alt: 'A melee character fights skeletons and a spider in an open field, then inspects a Thundering Mouthpiece warcry item', caption: 'Melee, monster packs and a warcry item' },
       { video: true, src: 'assets/video/arpg-outskirts-loot.mp4', poster: 'assets/video/arpg-outskirts-loot.jpg', alt: 'Leaving town into the outskirts, fighting skeleton archers, and picking up gold and a Page of Frost Conversion', caption: 'Town outskirts: archers and loot drops' },
       { src: 'assets/img/arpg-01-town-overview.jpg', alt: 'Isometric overview of the town hub with houses, trees, and HUD orbs' },
